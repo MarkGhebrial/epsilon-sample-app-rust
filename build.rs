@@ -9,7 +9,6 @@ fn main() {
     // Assemble eadk.s
     println!("cargo:rerun-if-changed=eadk/eadk.s");
     Build::new().file("eadk/eadk.s").compile("asm");
-    println!("FINISHED COMPILING eadk.s ~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
     // Build bindings for the eadk
     let bindings = bindgen::Builder::default()
@@ -17,6 +16,7 @@ fn main() {
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .blocklist_type("::std::os::raw::[_[a-z][A-Z]]+")
         .generate()
         .expect("Unable to generate bindings");
 
